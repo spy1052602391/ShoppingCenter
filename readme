@@ -1,0 +1,52 @@
+一、日期转换器
+    1.自定义一个类 实现接口Converter接口，实现一个Converter方法(Clazz clazz,Object value)
+    2.String ---> Date , SimpleDateFormat parse(String) --->  Date
+
+
+
+
+
+
+
+二、错误
+1.很奇怪的错误：
+mysql NullPointerException at com.mysql.jdbc.PreparedStatement.setTimestamp(PreparedStatement.java
+ 原来是因为数据库 connector jar包的版本5.1.47  有bug   转换为5.1.46就好了。
+
+2.注解responsebody后，通过适当的转换器转换之后，才会返回结果，通常返回json或者xml数据。
+
+3.Ajax的success方法是回调函数，在A方法中调用$ajax， success方法在等待后台返回结果的时候，A方法的执行不会中断，继续执行$ajax后面的语句。
+    这是因为ajax默认是异步处理的，这时候执行的是两个线程，可以设置属性async:false, 将异步变为同步的，必须等待success执行完毕才能执行原来的函数。
+
+4.JQuery的$("#ID") 使用id来操作标签
+
+5.a标签的href是重定向
+
+6.tomcat停止的时候异常，是缓存ehcache报的，在web.xml中添加一个监听器，去释放encache的缓存，解决。
+
+7.页面中第一个的div字体行数太多的话，会影响下一行div的排布。
+
+8.数据库中按照指定的查询顺序返回输出结果select * from product where pid in('2','1') order by field(pid,2,1);
+
+9.list.remove(int) != list.remove(Integer)
+
+10.session是本次对话有效的域，只要对话没有结束。所以前端后端 都可以通过session来取数据
+
+11. useGeneratedKeys="true" keyProperty="oid"  可以在mapper的insert标签中，将数据库中自增长的数值返回到java对象的oid中。
+
+12. resultMap 在多表查询中，返回两个POJO对象的数据， 这时候在java中使用扩展类，即A类中有B对象的成员变量，这时候使用resultMap 就可以把
+    所有数据都取出来。 而resultType只能取 某一个POJO对象， 而且也不适用于多表查询。
+
+13. 在表单提交的时候 action 跳转页面， 如果使用get方法 action = url?p=1;   这样些的话p这个参数不会传入到后台，因为get方法会将url后面的
+参数列表进行重新组织，具体就是将所有input的值变为参数。  而如果使用post方式 url后面的参数会传过去， input中的数据会放入请求体中。
+如果是href等跳转页面， 则没有上述问题。
+
+
+
+
+
+
+14. 部署到tomcat之后，会出现缺包的错误，将WEB-INF的lib下面缺少的包 放入tomcat的lib文件下  解决
+
+15. 部署到tomcat之后， jsp:include 这个标签  会报错， 这是动态包含，在运行的时候再解析 ， 可能tomcat的解析步骤和idea的不一样。
+    奇怪的是，如果使用后台向前台的请求转发操作就不会报错， 所有的重定向 都会因为jsp:include报错。 解决办法就是暂时全部换成请求转发。

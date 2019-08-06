@@ -1,0 +1,79 @@
+<?xml version="1.0"  encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.song.dao.OrderMapper">
+
+    <insert id="addOrders">
+        insert into orderitem(count,subtotal,pid,oid,uid)
+        <foreach collection="list" item="list" open="values" separator=",">
+            (#{list.count},#{list.subtotal},#{list.product.pid},#{oid},#{uid})
+        </foreach>
+    </insert>
+
+    <insert id="addItems" parameterType="com.song.domain.Orders" useGeneratedKeys="true" keyProperty="oid">
+        insert into orders(ordertime,total,state,uid,pid) values(Now(),#{total},0,#{uid},#{pid})
+    </insert>
+
+    <resultMap id="findItems" type="com.song.domain.CartExpand">
+        <id column="itemid" property="itemid"/>
+        <result column="count" property="count"/>
+        <result column="subtotal" property="subtotal"/>
+        <result column="oid" property="oid"/>
+        <result column="uid" property="uid"/>
+        <result column="pid" property="pid"/>
+        <association property="product" javaType="com.song.domain.Product">
+            <id column="pid" property="pid"/>
+            <result column="pname" property="pname"/>
+            <result column="market_price" property="market_price"/>
+            <result column="shop_price" property="shop_price"/>
+            <result column="pimage" property="pimage"/>
+            <result column="pdate" property="pdate"/>
+            <result column="is_hot" property="is_hot"/>
+            <result column="pdesc" property="pdesc"/>
+            <result column="pflag" property="pflag"/>
+            <result column="cid" property="cid"/>
+        </association>
+    </resultMap>
+    <select id="findOrderById" resultMap="findItems">
+        select * from orderitem oi,product p where oi.oid=#{oid} and oi.uid=#{uid} and oi.pid=p.pid;
+    </select>
+
+    <resultMap id="findOrders" type="com.song.domain.OrdersExpand">
+        <id column="oid" property="oid"/>
+        <result column="total" property="total"/>
+        <result column="ordertime" property="ordertime"/>
+        <result column="address" property="address"/>
+        <result column="name" property="name"/>
+        <result column="telephone" property="telephone"/>
+        <result column="state" property="state"/>
+        <result column="uid" property="uid"/>
+        <result column="pid" property="pid"/>
+        <association property="product" javaType="com.song.domain.Product">
+            <id column="pid" property="pid"/>
+            <result column="pname" property="pname"/>
+            <result column="pimage" property="pimage"/>
+        </association>
+    </resultMap>
+
+    <select id="findOrders" resultMap="findOrders">
+        select o.*,p.pname pname,p.pimage pimage from orders o,product p where o.pid=p.pid and uid=#{uid};
+    </select>
+
+
+    <select id="checkOrder" resultType="com.song.domain.Orders">
+        select * from orders where uid=#{uid} and oid=#{oid};
+    </select>
+
+
+    <update id="updateOrder" parameterType="com.song.domain.Orders">
+        update orders set address=#{address},telephone=#{telephone},name=#{name},state=#{state}
+        where oid=#{oid} and uid=#{uid};
+    </update>
+
+    <delete id="deleteOrder">
+        delete from orders where oid=#{oid} and uid=#{uid};
+    </delete>
+
+    <delete id="deleteOrderItem">
+        delete from orderitem where oid=#{oid} and uid=#{uid};
+    </delete>
+</mapper>

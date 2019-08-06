@@ -1,0 +1,50 @@
+<?xml version="1.0"  encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.song.dao.ProductMapper">
+
+    <select id="findHot" resultType="com.song.domain.Product">
+        select * from product where is_hot =1 order by pdate limit 9
+    </select>
+
+    <select id="findProductById" parameterType="integer" resultType="com.song.domain.Product">
+        select * from product where pid=#{pid};
+    </select>
+
+    <select id="findNew" resultType="com.song.domain.Product">
+        select * from product  order by pdate limit 9
+    </select>
+
+    <select id="findByPage"  resultType="com.song.domain.Product">
+        select * from product where cid = #{cid} limit #{currentPage},#{pageSize};
+    </select>
+
+    <select id="getTotalCount" parameterType="integer" resultType="integer">
+        select count(*) from product where cid = #{cid};
+    </select>
+
+    <select id="findById" resultType="com.song.domain.Product">
+        select * from product
+        <where>
+            <choose>
+                <when test="strings != null">
+                    <foreach collection="strings" item="pid" open="pid in(" close=") " separator=",">
+                        #{pid}
+                    </foreach>
+                </when>
+                <otherwise>
+                    pid = -1;
+                </otherwise>
+            </choose>
+        </where>
+        order by field(pid,
+        <foreach collection="strings" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+         limit 7;
+    </select>
+
+    <select id="findByName" resultType="com.song.domain.Product">
+        select * from product where pname like '%${name}%';
+    </select>
+</mapper>

@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="ShoppingCenter">
+    <output-path>$PROJECT_DIR$/out/artifacts/ShoppingCenter</output-path>
+    <root id="archive" name="ShoppingCenter.war">
+      <element id="artifact" artifact-name="ShoppingCenter:war exploded" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/webapp" />
+    </root>
+  </artifact>
+</component>

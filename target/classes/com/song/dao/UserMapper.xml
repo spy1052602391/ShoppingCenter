@@ -1,0 +1,24 @@
+<?xml version="1.0"  encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.song.dao.UserMapper">
+
+    <insert id="add" parameterType="com.song.domain.User">
+        insert into user values(#{uid},#{password},#{name},#{email},#{telephone},#{birthday},#{sex},#{state},#{code},#{username});
+    </insert>
+
+    <sql id="ByName">
+        <if test="username != null">
+            username = #{username};
+        </if>
+    </sql>
+    <select id="queryUserByName" parameterType="com.song.domain.User" resultType="com.song.domain.User" >
+        select * from user
+        <where>
+            <include refid="ByName"/>
+        </where>
+    </select>
+
+    <select id="findByUsernameAndPassword" parameterType="com.song.domain.User" resultType="com.song.domain.User">
+        select * from user where username = #{username};
+    </select>
+</mapper>
